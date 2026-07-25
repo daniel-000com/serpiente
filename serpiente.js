@@ -6,6 +6,9 @@
     
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
+    let lineaX = 0;
+    let lineaY = 0;
+
 
 
 
@@ -34,6 +37,16 @@
        las lineas en futuros juegos ]]]]]*/
     }
 
+    function pintarParte(lineaX, lineaY){
+      let cuadroX = lineaX* TAMAÑIO_CELDA;
+      let cuadroY = lineaY* TAMAÑIO_CELDA;
+      ctx.fillStyle = "blue";
+      ctx.fillRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+      ctx.strokeStyle = "#ff52d9";
+      ctx.strokeRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+
+    }
+
     // Primera pintura del juego al cargar la página
     dibujarTodo();
 
@@ -48,6 +61,15 @@
     function dibujarTodo() {
       limpiarCanvas();
       dibujarTablero();
+      pintarParte(5,1);
+      pintarParte(5,5);
+      pintarParte(10,2);
+      pintarParte(15,23);
+      pintarParte(23,15);
+      pintarParte(0,15);
+      pintarParte(23,0);
+      pintarParte(0,3);
+
     }
 
 
