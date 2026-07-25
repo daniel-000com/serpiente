@@ -6,6 +6,26 @@
     
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
+    const SERPIENTE =[
+      {X:0,Y:10},
+      {X:0,Y:11},
+      {X:0,Y:12},
+      {X:1,Y:12},
+      {X:2,Y:12},
+      {X:4,Y:5},
+      {X:10,Y:10},
+      {X:8,Y:0},
+      {X:0,Y:0},
+      {X:1,Y:0},
+      {X:2,Y:0},
+      {X:0,Y:12},
+      {X:9,Y:12},
+      {X:10,Y:12},
+      {X:11,Y:12},
+      {X:12,Y:12},
+      {X:12,Y:13},
+
+    ]
     let lineaX = 0;
     let lineaY = 0;
 
@@ -46,6 +66,26 @@
       ctx.strokeRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
 
     }
+    
+    function pintarSerpiente(){
+      let cabeza = SERPIENTE[0];
+      let cuadroX = cabeza.X * TAMAÑIO_CELDA;
+      let cuadroY = cabeza.Y * TAMAÑIO_CELDA;
+      ctx.fillStyle = "#f32626";
+      ctx.fillRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+      ctx.strokeStyle = "#ff52d9";
+      ctx.strokeRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+
+      for(let i =1; i< SERPIENTE.length; i++){
+        let cuadroX = SERPIENTE[i].X * TAMAÑIO_CELDA;
+      let cuadroY = SERPIENTE[i].Y* TAMAÑIO_CELDA;
+      ctx.fillStyle = "blue";
+      ctx.fillRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+      ctx.strokeStyle = "#ff52d9";
+      ctx.strokeRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
+}
+
+}
 
     // Primera pintura del juego al cargar la página
     dibujarTodo();
@@ -61,15 +101,8 @@
     function dibujarTodo() {
       limpiarCanvas();
       dibujarTablero();
-      pintarParte(5,1);
-      pintarParte(5,5);
-      pintarParte(10,2);
-      pintarParte(15,23);
-      pintarParte(23,15);
-      pintarParte(0,15);
-      pintarParte(23,0);
-      pintarParte(0,3);
-
+      pintarSerpiente();
+ 
     }
 
 
