@@ -60,14 +60,17 @@
     }
     
     function pintarSerpiente(){
+      //dibujar cabeza
       let cabeza = SERPIENTE[0];
       let cuadroX = cabeza.X * TAMAÑIO_CELDA;
       let cuadroY = cabeza.Y * TAMAÑIO_CELDA;
+      // color distintivo para ubicar la cabeza
       ctx.fillStyle = "#f32626";
       ctx.fillRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
       ctx.strokeStyle = "#ff52d9";
       ctx.strokeRect(cuadroX, cuadroY, TAMAÑIO_CELDA, TAMAÑIO_CELDA);
 
+      //dibujar cuerpo
       for(let i =1; i< SERPIENTE.length; i++){
         let cuadroX = SERPIENTE[i].X * TAMAÑIO_CELDA;
       let cuadroY = SERPIENTE[i].Y* TAMAÑIO_CELDA;
@@ -97,5 +100,57 @@
  
     }
 
+    function moverDerecha(){
+      // crear nuevo objeto a la derecha de la cabeza
+      let nvCabeza = { 
+        X: SERPIENTE[0].X +1 ,
+        Y: SERPIENTE[0].Y 
+        };
+      // reemplaza la pocicion 0 por el nuevo objeto y desplaza el resto
+        SERPIENTE.unshift(nvCabeza);
+      // elimina el ultimo objeto
+        SERPIENTE.pop();       
+}
+
+function moverIzquierda(){
+      let nvCabeza = { 
+        X: SERPIENTE[0].X -1 ,
+        Y: SERPIENTE[0].Y 
+        };
+        SERPIENTE.unshift(nvCabeza);
+        SERPIENTE.pop();    
+}
+
+function moverArriba(){
+      let nvCabeza = { 
+        X: SERPIENTE[0].X,
+        Y: SERPIENTE[0].Y -1
+        };
+        SERPIENTE.unshift(nvCabeza);
+        SERPIENTE.pop();    
+}
+
+function moverAbajo(){
+      let nvCabeza = { 
+        X: SERPIENTE[0].X,
+        Y: SERPIENTE[0].Y +1 
+        };
+        SERPIENTE.unshift(nvCabeza);
+        SERPIENTE.pop();    
+}
+
+function cambiarDireccion(direccion){
+  if(direccion === 'derecha'){
+    moverDerecha();
+  }else if( direccion === 'izquierda'){
+    moverIzquierda();
+  }else if( direccion === 'arriba'){
+    moverArriba();
+  }else if( direccion === 'abajo'){
+    moverAbajo();
+  }
+  dibujarTodo();
+    
+}
 
 
