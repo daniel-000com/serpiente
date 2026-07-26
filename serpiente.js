@@ -3,6 +3,8 @@
     const canvas = document.getElementById("canvasJuego");
     const ctx = canvas.getContext("2d");
     const TAMAÑIO_CELDA = 25;
+
+    
     
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
@@ -20,8 +22,7 @@
     ]
     let lineaX = 0;
     let lineaY = 0;
-
-
+    let direccionActual = derecha;
 
 
     function dibujarTablero(){
@@ -140,17 +141,38 @@ function moverAbajo(){
 }
 
 function cambiarDireccion(direccion){
-  if(direccion === 'derecha'){
-    moverDerecha();
-  }else if( direccion === 'izquierda'){
-    moverIzquierda();
-  }else if( direccion === 'arriba'){
-    moverArriba();
-  }else if( direccion === 'abajo'){
-    moverAbajo();
-  }
-  dibujarTodo();
+  direccionActual = derecha;
     
 }
 
+function iniciarJuego(){
+  /*"setInterval" repite una fincion Continuamente, solo nececita
+  los siguiente valore (nombre de la funcion y el tiempo en milisegundos)*/
+intervaloSerpiente = setInterval(moverSerpiente,1000);
+}
 
+function pausarJuego(){
+clearInterval =(intervaloSerpiente);
+}
+
+function moverSerpiente(){
+  console.log("movimiento");
+  if( direccionActual === 'derecha'){
+    moverDerecha();
+  }else if( direccionActual === 'izquierda'){
+    moverIzquierda();
+  }else if( direccionActual === 'arriba'){
+    moverArriba();
+  }else if( direccionActual === 'abajo'){
+    moverAbajo();
+  };
+  dibujarTodo();
+}
+
+function pintarComida(){
+  let comizaX =Math.floor(Math.random() * canvas.width/TAMAÑIO_CELDA);
+  let comidaY =Math.floor(Math.random() *canvas.height/TAMAÑIO_CELDA);
+  ctx.strokeStyle = "#ae0afa";
+
+  pintarParte(comizaX, comidaY);
+}
