@@ -8,7 +8,7 @@
     
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
-    const SERPIENTE =[
+    let SERPIENTE =[
       {X:3,Y:10},
       {X:3,Y:11},
       {X:3,Y:12},
@@ -175,9 +175,11 @@ function moverSerpiente(){
     moverAbajo(crecer);
   };
   dibujarTodo();
-  if(atraparComida() === true){
+  if(crecer){
+    generarComida();
     puntaje ++;
     document.getElementById("puntaje").innerText = puntaje;
+    
   }
 }
 function generarComida(){
@@ -197,4 +199,25 @@ function atraparComida(){
   }else{
     return false;
   }
+}
+function reiniciar(){
+  puntaje = 0
+  SERPIENTE =[
+      {X:3,Y:10},
+      {X:3,Y:11},
+      {X:3,Y:12},
+      {X:3,Y:13},
+      {X:3,Y:14},
+      {X:3,Y:15},
+      {X:4,Y:15},
+      {X:5,Y:15},
+      {X:6,Y:15} 
+    ]
+  generarComida();
+  limpiarCanvas();
+  dibujarTablero();
+  pintarSerpiente();
+  pintarComida()
+  
+
 }
