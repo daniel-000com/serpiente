@@ -152,6 +152,8 @@ function cambiarDireccion(direccion){
 }
 
 function iniciarJuego(){
+  generarComida();
+  dibujarTodo();
   /*"setInterval" repite una fincion Continuamente, solo nececita
   los siguiente valore (nombre de la funcion y el tiempo en milisegundos)*/
 intervaloSerpiente = setInterval(moverSerpiente,1000);
@@ -175,13 +177,17 @@ function moverSerpiente(){
   dibujarTodo();
   if(atraparComida() === true){
     puntaje ++;
+    document.getElementById("puntaje").innerText = puntaje;
   }
 }
-
-function pintarComida(){
+function generarComida(){
   comidaX =Math.floor(Math.random() * (canvas.width/TAMAÑIO_CELDA));
   comidaY =Math.floor(Math.random() * (canvas.height/TAMAÑIO_CELDA));
 
+}
+
+function pintarComida(){ 
+//agrega el color directamente en el parametro 
   pintarParte(comidaX, comidaY, "#b60afa");
 }
 
