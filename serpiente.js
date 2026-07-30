@@ -28,6 +28,8 @@
     let puntaje = 0;
     let intervaloSerpiente;
     let velocidadSerpiente = 900;
+    let tiempo = 10;
+    let intervaloTiempo ;
 
 
     function dibujarTablero(){
@@ -148,11 +150,29 @@ function moverAbajo(crecer){
 
 
 function cambiarDireccion(direccion){
+  // Si va a la derecha, no puede ir a la izquierda
+  if (direccionActual === "derecha" && direccion === "izquierda") {
+    return;
+  }
+  // Si va a la izquierda, no puede ir a la derecha
+  if (direccionActual === "izquierda" && direccion === "derecha") {
+    return;
+  }
+  // Si va arriba, no puede ir abajo
+  if (direccionActual === "arriba" && direccion === "abajo") {
+    return;
+  }
+  // Si va abajo, no puede ir arriba
+  if (direccionActual === "abajo" && direccion === "arriba") {
+    return;
+    }
   direccionActual = direccion;
     
 }
 
 function iniciarJuego(){
+  clearInterval(intervaloTiempo);
+    intervaloTiempo = setInterval(restarTiempo, 1000);
   clearInterval(intervaloSerpiente);
   document.getElementById("estado").innerText = "Jugando";
 
@@ -166,6 +186,7 @@ intervaloSerpiente = setInterval(moverSerpiente,velocidadSerpiente);
 
 function pausarJuego(){
 clearInterval(intervaloSerpiente);
+clearInterval(intervaloTiempo);
 document.getElementById("estado").innerText = "Pausado";
 }
 
@@ -269,6 +290,10 @@ function atraparComida(){
   }
 }
 function reiniciarJuego(){
+  puntaje = 0;
+  clearInterval(intervaloTiempo);
+  tiempo = 10
+  document.getElementById("tiempoRest").innerText = tiempo;
   document.getElementById("estado").innerText = "Listo";
   document.getElementById("puntaje").innerText = 0;
   document.getElementById("mensaje").innerText =
@@ -292,4 +317,15 @@ function reiniciarJuego(){
   pintarComida()
   
 
+}
+
+function restarTiempo(){
+    tiempo--;
+        document.getElementById("tiempoRest").innerText = tiempo;
+        if (tiempo == 0) {
+          clearInterval(intervaloSerpiente);
+         clearInterval(intervaloTiempo); 
+         alert("¡GAME OVER! Puntos obtenidos: " + puntaje);
+    }
+        
 }
