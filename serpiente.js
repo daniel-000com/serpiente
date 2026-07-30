@@ -3,8 +3,18 @@
     const canvas = document.getElementById("canvasJuego");
     const ctx = canvas.getContext("2d");
     const TAMAÑIO_CELDA = 25;
+    const sonidoComer = new Audio("Audio_3_m4a_20260730_000703.m4a");
 
-    
+    const sonidoGameOver = new Audio("Audio_2_m4a_20260730_000617.m4a");
+
+sonidoComer.volume = 0.7;
+
+sonidoGameOver.volume = 0.8;
+    const musica = new Audio("Audio_1_m4a_20260729_231723.m4a");
+
+musica.loop = true;      // Se repetirá indefinidamente
+
+musica.volume = 0.4;     // Volumen entre 0 y 1
     
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
@@ -28,7 +38,7 @@
     let puntaje = 0;
     let intervaloSerpiente;
     let velocidadSerpiente = 900;
-    let tiempo = 10;
+    let tiempo = 60;
     let intervaloTiempo ;
 
 
@@ -171,6 +181,7 @@ function cambiarDireccion(direccion){
 }
 
 function iniciarJuego(){
+  musica.play();
   clearInterval(intervaloTiempo);
     intervaloTiempo = setInterval(restarTiempo, 1000);
   clearInterval(intervaloSerpiente);
@@ -185,6 +196,7 @@ intervaloSerpiente = setInterval(moverSerpiente,velocidadSerpiente);
 }
 
 function pausarJuego(){
+  musica.pause();
 clearInterval(intervaloSerpiente);
 clearInterval(intervaloTiempo);
 document.getElementById("estado").innerText = "Pausado";
@@ -212,6 +224,13 @@ function GameOver() {
     nuevaY < 0 ||
     nuevaY >= canvas.height / TAMAÑIO_CELDA
   ) {
+    musica.pause();
+
+musica.currentTime = 0;
+
+sonidoGameOver.currentTime = 0;
+
+sonidoGameOver.play();
     clearInterval(intervaloSerpiente);
 
     document.getElementById("estado").innerText = "GAME OVER";
@@ -225,6 +244,7 @@ function GameOver() {
 }
 
 function moverSerpiente(){
+  
     // Verificar si la siguiente posición sale del tablero
 
   if(GameOver()){
@@ -234,16 +254,20 @@ function moverSerpiente(){
   }
   let crecer =atraparComida();
   if( direccionActual === 'derecha'){
-    moverDerecha(crecer);
+    moverDerecha(false);
   }else if( direccionActual === 'izquierda'){
-    moverIzquierda(crecer);
+    moverIzquierda(false);
   }else if( direccionActual === 'arriba'){
-    moverArriba(crecer);
+    moverArriba(false);
   }else if( direccionActual === 'abajo'){
-    moverAbajo(crecer);
+    moverAbajo(false);
   };
   dibujarTodo();
   if(crecer){
+
+    sonidoComer.currentTime = 0;
+
+    sonidoComer.play();
     generarComida();
     puntaje ++;
     document.getElementById("puntaje").innerText = puntaje;  
@@ -251,16 +275,22 @@ function moverSerpiente(){
   if(puntaje == 1){
     cambiarVelocidad(800);
   }
-  if(puntaje == 3){
+  if(puntaje == 2){
     cambiarVelocidad(700);
   }
-  if(puntaje == 5){
+  if(puntaje >= 3){
+    moverComida();
+    document.getElementById("mensajeLevel").innerText = "NIVEL 2";
+    document.getElementById("mensajeLevelMENSAJE").innerText = "ATARPA LA COMIDA";
+}
+  if(puntaje == 3){
     cambiarVelocidad(600);
+    
   }
-  if(puntaje == 7){
+  if(puntaje == 4){
     cambiarVelocidad(500);
   }
-  if(puntaje == 9){
+  if(puntaje == 5){
     cambiarVelocidad(400);
   }
 }
@@ -272,9 +302,18 @@ function cambiarVelocidad(nuevaVelocidad){
 }
 
 function generarComida(){
-  comidaX =Math.floor(Math.random() * (canvas.width/TAMAÑIO_CELDA));
-  comidaY =Math.floor(Math.random() * (canvas.height/TAMAÑIO_CELDA));
-
+    let posicionValida = false;
+    while(!posicionValida){
+        comidaX = Math.floor(Math.random() * (canvas.width / TAMAÑIO_CELDA));
+        comidaY = Math.floor(Math.random() * (canvas.height / TAMAÑIO_CELDA));
+        posicionValida = true;
+        for(let parte of SERPIENTE){
+            if(parte.X === comidaX && parte.Y === comidaY){
+                posicionValida = false;
+                break;
+            }
+        }
+    }
 }
 
 function pintarComida(){ 
@@ -290,12 +329,14 @@ function atraparComida(){
   }
 }
 function reiniciarJuego(){
+  clearInterval(intervaloSerpiente)
   puntaje = 0;
   clearInterval(intervaloTiempo);
-  tiempo = 10
+  tiempo = 60
   document.getElementById("tiempoRest").innerText = tiempo;
   document.getElementById("estado").innerText = "Listo";
   document.getElementById("puntaje").innerText = 0;
+  document.getElementById("mensajeLevel").innerText = "NIVEL 1";
   document.getElementById("mensaje").innerText =
       "¡preparado para jugar!? 😈🎮";
   direccionActual = 'derecha';
@@ -328,4 +369,17 @@ function restarTiempo(){
          alert("¡GAME OVER! Puntos obtenidos: " + puntaje);
     }
         
+}
+function moverComida(){
+
+    comidaX++;
+
+    // Si llegó a la pared derecha
+
+    if(comidaX >= canvas.width / TAMAÑIO_CELDA){
+
+      generarComida();
+
+    }
+
 }
