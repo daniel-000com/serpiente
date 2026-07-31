@@ -34,7 +34,7 @@ musica.volume = 0.4;     // Volumen entre 0 y 1
     let comidaY;
     let puntaje = 0;
     let intervaloSerpiente;
-    let velocidadSerpiente = 700;
+    let velocidadSerpiente = 600;
     let velocidadComida = 800;
     let tiempo = 80;
     let intervaloTiempo ;
@@ -188,7 +188,9 @@ function iniciarJuego(){
   document.getElementById("estado").innerText = "Jugando";
 
   document.getElementById("mensaje").innerText = "¡come todo lo que puedas!";
-  generarComida();
+  if(comidaX === undefined && comidaY === undefined){
+    generarComida();
+  }
   dibujarTodo();
   /*"setInterval" repite una fincion Continuamente, solo nececita
   los siguiente valore (nombre de la funcion y el tiempo en milisegundos)*/
@@ -254,17 +256,17 @@ function moverSerpiente(){
     return;
 
   }
-  
-  if( direccionActual === 'derecha'){
-    moverDerecha(false);
-  }else if( direccionActual === 'izquierda'){
-    moverIzquierda(false);
-  }else if( direccionActual === 'arriba'){
-    moverArriba(false);
-  }else if( direccionActual === 'abajo'){
-    moverAbajo(false);
-  };
   let crecer =atraparComida();
+  if( direccionActual === 'derecha'){
+    moverDerecha(crecer);
+  }else if( direccionActual === 'izquierda'){
+    moverIzquierda(crecer);
+  }else if( direccionActual === 'arriba'){
+    moverArriba(crecer);
+  }else if( direccionActual === 'abajo'){
+    moverAbajo(crecer);
+  };
+  
   dibujarTodo();
   if(crecer){
 
@@ -276,31 +278,39 @@ function moverSerpiente(){
     document.getElementById("puntaje").innerText = puntaje;  
   }
   if(puntaje == 1){
-    cambiarVelocidad(600);
+    cambiarVelocidad(500);
   }
   if(puntaje == 2){
-    cambiarVelocidad(550);
+    cambiarVelocidad(450);
   }
   // aumentar el timpo en el siguiente nivel
   if(puntaje === 3 && !botonTiempo){
     tiempo +=20;
     botonTiempo = true;
-    
-}
-  if(puntaje >= 3){
-    cambiarVelocidad(500);
     if(!intervaloComida){
       //control de velocidad del la comida
       cambiarVelocidadComida(1000);
+      }
+    
+}
+  if(puntaje >= 3){
+    cambiarVelocidad(400);
+    
       document.getElementById("mensajeLevel").innerText = "NIVEL 2, ATARPA LA COMIDA";
-    }
     
   }
-  if(puntaje == 4){
-    cambiarVelocidad(400);
+  if(puntaje === 4 && velocidadComida !==700){
+    cambiarVelocidad(350);
+    cambiarVelocidadComida(700);
+  
   }
-  if(puntaje == 5){
+  if(puntaje === 5 && velocidadComida !==400){
+    cambiarVelocidad(350);
+    cambiarVelocidadComida(400);
+  }
+  if(puntaje >= 6 && velocidadComida !==350){
     cambiarVelocidad(300);
+    cambiarVelocidadComida(350);
   }
 }
 
@@ -337,13 +347,31 @@ function pintarComida(){
 }
 
 function atraparComida(){
-  if(SERPIENTE[0].X === comidaX && SERPIENTE[0].Y ===comidaY){
-    return true;
-  }else{
-    return false;
+
+  let siguienteX = SERPIENTE[0].X;
+  let siguienteY = SERPIENTE[0].Y;
+
+  if(direccionActual === "derecha"){
+      siguienteX++;
   }
+    else if(direccionActual === "izquierda"){
+      siguienteX--;
+  }
+  else if(direccionActual === "arriba"){
+      siguienteY--;
+  }
+  else if(direccionActual === "abajo"){
+      siguienteY++;
+  }
+
+  return ((siguienteX === comidaX && siguienteY === comidaY)||(SERPIENTE[0].X==comidaX && SERPIENTE[0].Y==comidaY)
+)
+
 }
 function reiniciarJuego(){
+  musica.pause();        // Detiene la música
+  musica.currentTime = 0; // La devuelve al segundo 0
+  
   clearInterval(intervaloSerpiente)
   puntaje = 0;
   clearInterval(intervaloTiempo);
@@ -356,21 +384,19 @@ function reiniciarJuego(){
       "¡preparado para jugar!? 😈🎮";
   direccionActual = 'derecha';
   SERPIENTE =[
-      {X:3,Y:10},
-      {X:3,Y:11},
       {X:3,Y:12},
       {X:3,Y:13},
       {X:3,Y:14},
       {X:3,Y:15},
       {X:4,Y:15},
       {X:5,Y:15},
-      {X:6,Y:15} 
     ]
   
   limpiarCanvas();
   dibujarTablero();
   pintarSerpiente();
-  pintarComida()
+  generarComida();
+  
   
 
 }
@@ -381,6 +407,7 @@ function restarTiempo(){
         if (tiempo == 0) {
           clearInterval(intervaloSerpiente);
          clearInterval(intervaloTiempo); 
+         clearInterval(intervaloComida);
          alert("¡GAME OVER! Puntos obtenidos: " + puntaje);
     }
         
