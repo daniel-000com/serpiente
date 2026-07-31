@@ -19,15 +19,12 @@ musica.volume = 0.4;     // Volumen entre 0 y 1
     const PERSONAJE_X = 1;
     const PERSONAJE_Y = 1;
     let SERPIENTE =[
-      {X:3,Y:10},
-      {X:3,Y:11},
       {X:3,Y:12},
       {X:3,Y:13},
       {X:3,Y:14},
       {X:3,Y:15},
       {X:4,Y:15},
-      {X:5,Y:15},
-      {X:6,Y:15} 
+      {X:5,Y:15}
 
     ]
     let lineaX = 0;
@@ -37,9 +34,12 @@ musica.volume = 0.4;     // Volumen entre 0 y 1
     let comidaY;
     let puntaje = 0;
     let intervaloSerpiente;
-    let velocidadSerpiente = 900;
-    let tiempo = 60;
+    let velocidadSerpiente = 700;
+    let velocidadComida = 800;
+    let tiempo = 80;
     let intervaloTiempo ;
+    let intervaloComida;
+    let botonTiempo = false;
 
 
     function dibujarTablero(){
@@ -199,6 +199,7 @@ function pausarJuego(){
   musica.pause();
 clearInterval(intervaloSerpiente);
 clearInterval(intervaloTiempo);
+clearInterval(intervaloComida);
 document.getElementById("estado").innerText = "Pausado";
 }
 
@@ -232,6 +233,8 @@ sonidoGameOver.currentTime = 0;
 
 sonidoGameOver.play();
     clearInterval(intervaloSerpiente);
+    clearInterval(intervaloComida);
+    clearInterval(intervaloTiempo);
 
     document.getElementById("estado").innerText = "GAME OVER";
     document.getElementById("mensaje").innerText =
@@ -246,13 +249,12 @@ sonidoGameOver.play();
 function moverSerpiente(){
   
     // Verificar si la siguiente posición sale del tablero
-
   if(GameOver()){
 
     return;
 
   }
-  let crecer =atraparComida();
+  
   if( direccionActual === 'derecha'){
     moverDerecha(false);
   }else if( direccionActual === 'izquierda'){
@@ -262,6 +264,7 @@ function moverSerpiente(){
   }else if( direccionActual === 'abajo'){
     moverAbajo(false);
   };
+  let crecer =atraparComida();
   dibujarTodo();
   if(crecer){
 
@@ -273,25 +276,31 @@ function moverSerpiente(){
     document.getElementById("puntaje").innerText = puntaje;  
   }
   if(puntaje == 1){
-    cambiarVelocidad(800);
+    cambiarVelocidad(600);
   }
   if(puntaje == 2){
-    cambiarVelocidad(700);
+    cambiarVelocidad(550);
   }
-  if(puntaje >= 3){
-    moverComida();
-    document.getElementById("mensajeLevel").innerText = "NIVEL 2";
-    document.getElementById("mensajeLevelMENSAJE").innerText = "ATARPA LA COMIDA";
+  // aumentar el timpo en el siguiente nivel
+  if(puntaje === 3 && !botonTiempo){
+    tiempo +=20;
+    botonTiempo = true;
+    
 }
-  if(puntaje == 3){
-    cambiarVelocidad(600);
+  if(puntaje >= 3){
+    cambiarVelocidad(500);
+    if(!intervaloComida){
+      //control de velocidad del la comida
+      cambiarVelocidadComida(1000);
+      document.getElementById("mensajeLevel").innerText = "NIVEL 2, ATARPA LA COMIDA";
+    }
     
   }
   if(puntaje == 4){
-    cambiarVelocidad(500);
+    cambiarVelocidad(400);
   }
   if(puntaje == 5){
-    cambiarVelocidad(400);
+    cambiarVelocidad(300);
   }
 }
 
@@ -299,6 +308,12 @@ function cambiarVelocidad(nuevaVelocidad){
     clearInterval(intervaloSerpiente);
     velocidadSerpiente=nuevaVelocidad;
     intervaloSerpiente = setInterval(moverSerpiente,velocidadSerpiente);
+}
+
+function cambiarVelocidadComida(nuevaVelocidad){
+    clearInterval(intervaloComida);
+    velocidadComida=nuevaVelocidad;
+    intervaloComida = setInterval(moverComida,velocidadComida);
 }
 
 function generarComida(){
@@ -332,7 +347,7 @@ function reiniciarJuego(){
   clearInterval(intervaloSerpiente)
   puntaje = 0;
   clearInterval(intervaloTiempo);
-  tiempo = 60
+  tiempo = 80
   document.getElementById("tiempoRest").innerText = tiempo;
   document.getElementById("estado").innerText = "Listo";
   document.getElementById("puntaje").innerText = 0;
@@ -381,5 +396,6 @@ function moverComida(){
       generarComida();
 
     }
+    dibujarTodo();
 
 }
